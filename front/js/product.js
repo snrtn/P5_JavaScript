@@ -100,8 +100,6 @@ function addToCart(product) {
     const quantity = document.getElementById("quantity").value;
     const color = document.getElementById("colors").value;
     const name = document.getElementById("title").innerText;
-    const alt = document.getElementById("title").value;
-    const image = document.getElementById("title").innerText;
 
     if (!color.length) {
       document.getElementById("colorsError").innerHTML = "Choisir une couleur";
@@ -117,9 +115,6 @@ function addToCart(product) {
       id: id,
       color: color,
       quantity: parseInt(quantity),
-      name: name,
-      alt: product.altTxt,
-      image: product.imageUrl,
     };
 
     const goToCart = () => {

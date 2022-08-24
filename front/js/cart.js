@@ -19,20 +19,31 @@ const start = async () => {
 };
 start();
 
-function displayProducts() {
+async function displayProducts() {
+  const productList = await fetchProducts();
+
   if (dataSelected === null || dataSelected == 0) {
     productDOM.innerHTML = `<p>Votre panier est vide</p>`;
   } else {
     const products = dataSelected
       .map((product) => {
-        const item = {
-          id: product.id,
-          name: product.name,
-          alt: product.alt,
-          image: product.image,
-          color: product.color,
-          quantity: product.quantity,
-        };
+        const itemSEL = productList.find((prod) => {
+          if (prod.id === product.id) {
+            const item = {
+              id: product.id,
+              color: product.color,
+              quantity: product.quantity,
+              name: itemSEL.name,
+              alt: itemSEL.altTxt,
+              image: itemSEL.imageUrl,
+              price: itemSEL.price,
+            };
+
+            return item;
+          }
+
+          return itemSEL;
+        });
 
         return `<article
       class="cart__item"
@@ -49,7 +60,7 @@ function displayProducts() {
         <div class="cart__item__content__description">
           <h2>${item.name}</h2>
           <p>${item.color}</p>
-          <p class="item_price"></p>€
+          <p>${item.price}€</p>
         </div>
         <p/>
         <div class="cart__item__content__settings">
