@@ -28,22 +28,20 @@ async function displayProducts() {
     const products = dataSelected
       .map((product) => {
         const itemSEL = productList.find((prod) => {
-          if (prod.id === product.id) {
-            const item = {
-              id: product.id,
-              color: product.color,
-              quantity: product.quantity,
-              name: itemSEL.name,
-              alt: itemSEL.altTxt,
-              image: itemSEL.imageUrl,
-              price: itemSEL.price,
-            };
-
-            return item;
-          }
+          itemSEL = prod.id === product.id;
 
           return itemSEL;
         });
+
+        const item = {
+          id: product.id,
+          color: product.color,
+          quantity: product.quantity,
+          name: itemSEL.name,
+          alt: itemSEL.altTxt,
+          image: itemSEL.imageUrl,
+          price: itemSEL.price,
+        };
 
         return `<article
       class="cart__item"
@@ -111,3 +109,29 @@ function displayTotals() {
   displayTotalPrice.innerHTML = totalPrice / 10;
 }
 displayTotals();
+
+function getForm() {
+  const form = document.getElementById("order");
+
+  form.addEventListener("click", (event) => {
+    const nameFirst = document.getElementById("firstName");
+    const nameLast = document.getElementById("lastName");
+    const nameAddress = document.getElementById("address");
+    const nameCity = document.getElementById("city");
+    const nameEmail = document.getElementById("email");
+
+    const order = {
+      contact: {
+        nameFirst: nameFirst.value,
+        nameLast: nameLast.value,
+        nameAddress: nameAddress.value,
+        nameCity: nameCity.value,
+        nameEmail: nameEmail.value,
+      },
+    };
+
+    console.log(order);
+  });
+}
+
+getForm();
