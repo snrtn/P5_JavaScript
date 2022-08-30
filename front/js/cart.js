@@ -13,12 +13,6 @@ const fetchProducts = async () => {
   }
 };
 
-const start = async () => {
-  const data = await fetchProducts();
-  displayProducts(data);
-};
-start();
-
 async function displayProducts() {
   const productList = await fetchProducts();
 
@@ -28,9 +22,7 @@ async function displayProducts() {
     const products = dataSelected
       .map((product) => {
         const itemSEL = productList.find((prod) => {
-          itemSEL = prod.id === product.id;
-
-          return itemSEL;
+          return prod._id === product.id;
         });
 
         const item = {
@@ -58,7 +50,7 @@ async function displayProducts() {
         <div class="cart__item__content__description">
           <h2>${item.name}</h2>
           <p>${item.color}</p>
-          <p>${item.price}€</p>
+          <p>${item.price / 10}€</p>
         </div>
         <p/>
         <div class="cart__item__content__settings">
@@ -82,56 +74,109 @@ async function displayProducts() {
       })
       .join("");
     productDOM.innerHTML = `<section id="cart__items">${products}</section>`;
+    displayTotals(productList);
   }
 }
 displayProducts();
 
-function displayTotals() {
+function displayTotals(productList) {
   let itemQuantity = document.getElementsByClassName("itemQuantity");
-
-  let itemLength = itemQuantity.length,
-    total = 0;
-
-  for (let i = 0; i < itemLength; ++i) {
-    total += itemQuantity[i].valueAsNumber;
-  }
-
   let displayTotalQuantity = document.getElementById("totalQuantity");
-  displayTotalQuantity.innerHTML = total;
-
-  let totalPrice = 0;
-
-  for (let i = 0; i < itemLength; ++i) {
-    totalPrice += itemQuantity[i].valueAsNumber * data[i].price;
-  }
-
   let displayTotalPrice = document.getElementById("totalPrice");
+
+  let totalPrice = 0,
+    total = 0,
+    totalQty = 0;
+
+  dataSelected.forEach((cartItem, index) => {
+    const itemSEL = productList.find((prod) => {
+      return prod._id === cartItem.id;
+    });
+    totalQty += parseInt(cartItem.quantity);
+    totalPrice += parseInt(cartItem.quantity) * parseFloat(itemSEL.price);
+  });
+
+  displayTotalQuantity.innerHTML = totalQty;
   displayTotalPrice.innerHTML = totalPrice / 10;
 }
-displayTotals();
 
 function getForm() {
-  const form = document.getElementById("order");
+  const form = document.getElementById("cart__order__form");
+  const userFirstName = document.getElementById("firstName");
+  const userLastName = document.getElementById("lastName");
+  const userAddress = document.getElementById("address");
+  const userCity = document.getElementById("city");
+  const userEmail = document.getElementById("email");
 
-  form.addEventListener("click", (event) => {
-    const nameFirst = document.getElementById("firstName");
-    const nameLast = document.getElementById("lastName");
-    const nameAddress = document.getElementById("address");
-    const nameCity = document.getElementById("city");
-    const nameEmail = document.getElementById("email");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    const order = {
-      contact: {
-        nameFirst: nameFirst.value,
-        nameLast: nameLast.value,
-        nameAddress: nameAddress.value,
-        nameCity: nameCity.value,
-        nameEmail: nameEmail.value,
-      },
-    };
-
-    console.log(order);
+    validateInputs();
   });
+
+  const setError = (element, message) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector(".error");
+
+    errorDisplay.innerText = message;
+    inputControl.classList.add("error");
+    inputControl.classList.remove("success");
+  };
+
+  const setSuccess = (element) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector(".error");
+
+    errorDisplay.innerText = "";
+    inputControl.classList.add("success");
+    inputControl.classList.remove("error");
+  };
+
+  const isValidEmail = (email) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const validateInputs = () => {
+    const userFirstNameValue = userFirstName.value.trim();
+    const userLastNameValue = userLastName.value.trim();
+    const userEmailValue = userEmail.value.trim();
+    const userCityValue = userCity.value.trim();
+    const userAddressValue = userAddress.value.trim();
+
+    if (userFirstNameValue === "") {
+      setError(userFirstName, "FirstName is required");
+    } else {
+      setSuccess(userFirstName);
+    }
+
+    if (userLastNameValue === "") {
+      setError(userLastName, "LastName is required");
+    } else {
+      setSuccess(userLastName);
+    }
+
+    if (userEmailValue === "") {
+      setError(userEmail, "Email is required");
+    } else if (!isValidEmail(userEmailValue)) {
+      setError(userEmail, "Provide a valid email address");
+    } else {
+      setSuccess(userEmail);
+    }
+
+    if (userCityValue === "") {
+      setError(userCity, "Ville is required");
+    } else {
+      setSuccess(userCity);
+    }
+
+    if (userAddressValue === "") {
+      setError(userAddress, "Adresse is required");
+    } else {
+      setSuccess(userAddress);
+    }
+  };
 }
 
 getForm();
