@@ -1,7 +1,6 @@
 import { url } from "./utils.js";
 const productDOM = document.querySelector(".product");
 
-// Tu récupère l'id du produit dans l'url
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -27,10 +26,7 @@ const displayProduct = async () => {
 };
 
 const start = async () => {
-  // Récupère et affiche les produits
   await displayProduct();
-
-  // Bind le click listener au button
   onCartButtonClicked();
 };
 

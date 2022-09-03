@@ -66,7 +66,7 @@ async function displayProducts() {
             />
           </div>
           <div class="cart__item__content__settings__delete">
-            <p class="deleteItem">Supprimer</p>
+            <p class="deleteItem" >Supprimer</p>
           </div>
         </div>
       </div>
@@ -75,17 +75,16 @@ async function displayProducts() {
       .join("");
     productDOM.innerHTML = `<section id="cart__items">${products}</section>`;
     displayTotals(productList);
+    deleteProduct();
   }
 }
 displayProducts();
 
 function displayTotals(productList) {
-  let itemQuantity = document.getElementsByClassName("itemQuantity");
   let displayTotalQuantity = document.getElementById("totalQuantity");
   let displayTotalPrice = document.getElementById("totalPrice");
 
   let totalPrice = 0,
-    total = 0,
     totalQty = 0;
 
   dataSelected.forEach((cartItem, index) => {
@@ -100,13 +99,18 @@ function displayTotals(productList) {
   displayTotalPrice.innerHTML = totalPrice / 10;
 }
 
-function getForm() {
+function deleteProduct() {
+  let deleteBtn = document.querySelectorAll(".deleteItem");
+
+  for (let j = 0; j < deleteBtn.length; j++) {
+    deleteBtn[j].addEventListener("click", (event) => {
+      console.log(event.target);
+    });
+  }
+}
+
+function validateForm() {
   const form = document.getElementById("cart__order__form");
-  const userFirstName = document.getElementById("firstName");
-  const userLastName = document.getElementById("lastName");
-  const userAddress = document.getElementById("address");
-  const userCity = document.getElementById("city");
-  const userEmail = document.getElementById("email");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -114,23 +118,11 @@ function getForm() {
     validateInputs();
   });
 
-  const setError = (element, message) => {
-    const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector(".error");
-
-    errorDisplay.innerText = message;
-    inputControl.classList.add("error");
-    inputControl.classList.remove("success");
-  };
-
-  const setSuccess = (element) => {
-    const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector(".error");
-
-    errorDisplay.innerText = "";
-    inputControl.classList.add("success");
-    inputControl.classList.remove("error");
-  };
+  const userFirstName = document.getElementById("firstName");
+  const userLastName = document.getElementById("lastName");
+  const userAddress = document.getElementById("address");
+  const userCity = document.getElementById("city");
+  const userEmail = document.getElementById("email");
 
   const isValidEmail = (email) => {
     const re =
@@ -177,6 +169,23 @@ function getForm() {
       setSuccess(userAddress);
     }
   };
-}
 
-getForm();
+  const setError = (element, message) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector(".error");
+
+    errorDisplay.innerText = message;
+    inputControl.classList.add("error");
+    inputControl.classList.remove("success");
+  };
+
+  const setSuccess = (element) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector(".error");
+
+    errorDisplay.innerText = "";
+    inputControl.classList.add("success");
+    inputControl.classList.remove("error");
+  };
+}
+validateForm();
