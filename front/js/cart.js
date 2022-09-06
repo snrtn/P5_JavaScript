@@ -1,6 +1,6 @@
-import { url } from "./utils.js";
-let dataSelected = JSON.parse(localStorage.getItem("DATA_STORAGE"));
-const productDOM = document.querySelector("#cart__items");
+import { url } from './utils.js';
+let dataSelected = JSON.parse(localStorage.getItem('DATA_STORAGE'));
+const productDOM = document.querySelector('#cart__items');
 
 const fetchProducts = async () => {
   productDOM.innerHTML = '<div class="loading">Loading</div>';
@@ -9,7 +9,7 @@ const fetchProducts = async () => {
     const data = await response.json();
     return data;
   } catch (error) {
-    productDOM.innerHTML = "<p>Votre panier est vide</p>";
+    productDOM.innerHTML = '<p>Votre panier est vide</p>';
   }
 };
 
@@ -72,17 +72,18 @@ async function displayProducts() {
       </div>
     </article>`;
       })
-      .join("");
+      .join('');
     productDOM.innerHTML = `<section id="cart__items">${products}</section>`;
     displayTotals(productList);
+    changeQuantity();
     deleteProduct();
   }
 }
 displayProducts();
 
 function displayTotals(productList) {
-  let displayTotalQuantity = document.getElementById("totalQuantity");
-  let displayTotalPrice = document.getElementById("totalPrice");
+  let displayTotalQuantity = document.getElementById('totalQuantity');
+  let displayTotalPrice = document.getElementById('totalPrice');
 
   let totalPrice = 0,
     totalQty = 0;
@@ -99,30 +100,62 @@ function displayTotals(productList) {
   displayTotalPrice.innerHTML = totalPrice / 10;
 }
 
-function deleteProduct() {
-  let deleteBtn = document.querySelectorAll(".deleteItem");
+function changeQuantity() {
+  let quantityItem = document.querySelectorAll('.itemQuantity');
 
-  for (let j = 0; j < deleteBtn.length; j++) {
-    deleteBtn[j].addEventListener("click", (event) => {
-      console.log(event.target);
+  for (let c = 0; c < quantityItem.length; c++) {
+    quantityItem[c].addEventListener('change', (event) => {
+      event.preventDefault();
+
+      let defaultValue = dataSelected[c].quantity;
+      let value = quantityItem[c].valueAsNumber;
+
+      const totalValue = dataSelected.find((el) => el.value !== defaultValue);
+
+      totalValue.quantity = value;
+      dataSelected[c].quantity = totalValue.quantity;
+
+      localStorage.setItem('DATA_STORAGE', JSON.stringify(dataSelected));
+      location.reload();
     });
   }
 }
 
-function validateForm() {
-  const form = document.getElementById("cart__order__form");
+function deleteProduct() {
+  let deleteBtn = document.querySelectorAll('.deleteItem');
 
-  form.addEventListener("submit", (e) => {
+  for (let d = 0; d < deleteBtn.length; d++) {
+    deleteBtn[d].addEventListener('click', (e) => {
+      e.preventDefault();
+
+      let idDelete = dataSelected[d].id;
+      let colorDelete = dataSelected[d].color;
+
+      dataSelected = dataSelected.filter(
+        (el) => el.id !== idDelete || el.color !== colorDelete
+      );
+
+      localStorage.setItem('DATA_STORAGE', JSON.stringify(dataSelected));
+      location.reload();
+    });
+  }
+}
+
+// clientInputs
+const userFirstName = document.getElementById('firstName');
+const userLastName = document.getElementById('lastName');
+const userAddress = document.getElementById('address');
+const userCity = document.getElementById('city');
+const userEmail = document.getElementById('email');
+
+function validateForm() {
+  const form = document.getElementById('cart__order__form');
+
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     validateInputs();
   });
-
-  const userFirstName = document.getElementById("firstName");
-  const userLastName = document.getElementById("lastName");
-  const userAddress = document.getElementById("address");
-  const userCity = document.getElementById("city");
-  const userEmail = document.getElementById("email");
 
   const isValidEmail = (email) => {
     const re =
@@ -137,34 +170,34 @@ function validateForm() {
     const userCityValue = userCity.value.trim();
     const userAddressValue = userAddress.value.trim();
 
-    if (userFirstNameValue === "") {
-      setError(userFirstName, "FirstName is required");
+    if (userFirstNameValue === '') {
+      setError(userFirstName, 'FirstName is required');
     } else {
       setSuccess(userFirstName);
     }
 
-    if (userLastNameValue === "") {
-      setError(userLastName, "LastName is required");
+    if (userLastNameValue === '') {
+      setError(userLastName, 'LastName is required');
     } else {
       setSuccess(userLastName);
     }
 
-    if (userEmailValue === "") {
-      setError(userEmail, "Email is required");
+    if (userEmailValue === '') {
+      setError(userEmail, 'Email is required');
     } else if (!isValidEmail(userEmailValue)) {
-      setError(userEmail, "Provide a valid email address");
+      setError(userEmail, 'Provide a valid email address');
     } else {
       setSuccess(userEmail);
     }
 
-    if (userCityValue === "") {
-      setError(userCity, "Ville is required");
+    if (userCityValue === '') {
+      setError(userCity, 'Ville is required');
     } else {
       setSuccess(userCity);
     }
 
-    if (userAddressValue === "") {
-      setError(userAddress, "Adresse is required");
+    if (userAddressValue === '') {
+      setError(userAddress, 'Adresse is required');
     } else {
       setSuccess(userAddress);
     }
@@ -172,20 +205,61 @@ function validateForm() {
 
   const setError = (element, message) => {
     const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector(".error");
+    const errorDisplay = inputControl.querySelector('.error');
 
     errorDisplay.innerText = message;
-    inputControl.classList.add("error");
-    inputControl.classList.remove("success");
+    inputControl.classList.add('error');
+    inputControl.classList.remove('success');
   };
 
   const setSuccess = (element) => {
     const inputControl = element.parentElement;
-    const errorDisplay = inputControl.querySelector(".error");
+    const errorDisplay = inputControl.querySelector('.error');
 
-    errorDisplay.innerText = "";
-    inputControl.classList.add("success");
-    inputControl.classList.remove("error");
+    errorDisplay.innerText = '';
+    inputControl.classList.add('success');
+    inputControl.classList.remove('error');
   };
 }
 validateForm();
+
+function order() {
+  const buttonOrder = document.getElementById('order');
+
+  buttonOrder.addEventListener('click', (e) => {
+    let itemsId = [];
+
+    for (let i = 0; i < dataSelected.length; i++) {
+      itemsId.push(dataSelected[i].id);
+    }
+
+    const infoClient = {
+      contact: {
+        firstName: userFirstName.value,
+        lastName: userLastName.value,
+        address: userAddress.value,
+        city: userCity.value,
+        email: userEmail.value,
+      },
+      products: itemsId,
+    };
+
+    console.log(infoClient);
+
+    // fetch('http://localhost:3000/api/products/order', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(infoClient),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     // localStorage.clear();
+
+    //     document.location.href = `confirmation.html?id=${orderID}`;
+    //   });
+  });
+}
+order();
