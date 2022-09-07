@@ -244,22 +244,20 @@ function order() {
       products: itemsId,
     };
 
-    console.log(infoClient);
-
-    // fetch('http://localhost:3000/api/products/order', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(infoClient),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     // localStorage.clear();
-
-    //     document.location.href = `confirmation.html?id=${orderID}`;
-    //   });
+    fetch('http://localhost:3000/api/products/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(infoClient),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        let orderID = data.orderId;
+        localStorage.clear();
+        document.location.href = `confirmation.html?id=${orderID}`;
+      });
   });
 }
 order();

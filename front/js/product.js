@@ -1,8 +1,5 @@
-import { url } from "./utils.js";
-const productDOM = document.querySelector(".product");
-
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+import { url, id } from './utils.js';
+const productDOM = document.querySelector('.product');
 
 const fetchProducts = async (id) => {
   try {
@@ -46,7 +43,7 @@ const displayProducts = (product, index) => {
     .map((color) => {
       return `<option value="${color}">${color}</option>`;
     })
-    .join("");
+    .join('');
 
   productDOM.innerHTML = `
     <article class="product" id="product">
@@ -92,18 +89,18 @@ const displayProducts = (product, index) => {
 };
 
 function addToCart(product) {
-  document.getElementById("addToCart").addEventListener("click", () => {
-    const quantity = document.getElementById("quantity").value;
-    const color = document.getElementById("colors").value;
-    const name = document.getElementById("title").innerText;
+  document.getElementById('addToCart').addEventListener('click', () => {
+    const quantity = document.getElementById('quantity').value;
+    const color = document.getElementById('colors').value;
+    const name = document.getElementById('title').innerText;
 
     if (!color.length) {
-      document.getElementById("colorsError").innerHTML = "Choisir une couleur";
+      document.getElementById('colorsError').innerHTML = 'Choisir une couleur';
       return;
     }
     if (!parseInt(quantity) || parseInt(quantity) >= 6) {
-      document.getElementById("numbersError").innerHTML =
-        "Choisir quantity entre 1 et 5";
+      document.getElementById('numbersError').innerHTML =
+        'Choisir quantity entre 1 et 5';
       return;
     }
 
@@ -121,10 +118,10 @@ function addToCart(product) {
 
           Elle est ajoutée au panier
           `);
-      window.location.href = "cart.html";
+      window.location.href = 'cart.html';
     };
 
-    let dataStorage = JSON.parse(localStorage.getItem("DATA_STORAGE"));
+    let dataStorage = JSON.parse(localStorage.getItem('DATA_STORAGE'));
 
     if (dataStorage) {
       const resultFind = dataStorage.find(
@@ -136,20 +133,20 @@ function addToCart(product) {
         resultFind.quantity = newQuantite;
 
         if (resultFind.quantity >= 6) {
-          alert("quantity est plus 5");
+          alert('quantity est plus 5');
         } else {
-          localStorage.setItem("DATA_STORAGE", JSON.stringify(dataStorage));
+          localStorage.setItem('DATA_STORAGE', JSON.stringify(dataStorage));
           goToCart();
         }
       } else {
         dataStorage.push(data);
-        localStorage.setItem("DATA_STORAGE", JSON.stringify(dataStorage));
+        localStorage.setItem('DATA_STORAGE', JSON.stringify(dataStorage));
         goToCart();
       }
     } else {
       dataStorage = [];
       dataStorage.push(data);
-      localStorage.setItem("DATA_STORAGE", JSON.stringify(dataStorage));
+      localStorage.setItem('DATA_STORAGE', JSON.stringify(dataStorage));
       goToCart();
     }
   });
