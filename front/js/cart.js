@@ -163,6 +163,11 @@ function validateForm() {
     return re.test(String(email).toLowerCase());
   };
 
+  const isValidName = (name) => {
+    const re = /^[a-zA-Z]*$/;
+    return re.test(String(name).toLowerCase());
+  };
+
   const validateInputs = () => {
     const userFirstNameValue = userFirstName.value.trim();
     const userLastNameValue = userLastName.value.trim();
@@ -172,12 +177,16 @@ function validateForm() {
 
     if (userFirstNameValue === '') {
       setError(userFirstName, 'FirstName is required');
+    } else if (!isValidName(userFirstNameValue)) {
+      setError(userFirstName, 'Provide a valid FirstName');
     } else {
       setSuccess(userFirstName);
     }
 
     if (userLastNameValue === '') {
       setError(userLastName, 'LastName is required');
+    } else if (!isValidName(userLastNameValue)) {
+      setError(userLastName, 'Provide a valid LastName');
     } else {
       setSuccess(userLastName);
     }
@@ -253,10 +262,14 @@ function order() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         let orderID = data.orderId;
-        localStorage.clear();
-        document.location.href = `confirmation.html?id=${orderID}`;
+
+        if (data.contact.firstName.length === 0 && data.products.length < 0) {
+          return;
+        } else {
+          localStorage.clear();
+          document.location.href = `confirmation.html?id=${orderID}`;
+        }
       });
   });
 }
