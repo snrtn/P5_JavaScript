@@ -11,25 +11,20 @@ const fetchProducts = async (id) => {
   }
 };
 
-const displayProduct = async () => {
+const start = async () => {
   productDOM.innerHTML = '<h4 class="loading">Loading...</h4>';
   const product = await fetchProducts(id);
 
-  if (!product)
+  if (!product) {
     productDOM.innerHTML =
       '<p class="error">There was a problem fetching products. Please try again later </p>';
+  }
 
-  displayProducts(product);
+  displayProduct(product);
 };
-
-const start = async () => {
-  await displayProduct();
-  onCartButtonClicked();
-};
-
 start();
 
-const displayProducts = (product, index) => {
+const displayProduct = (product) => {
   const item = {
     img: product.imageUrl,
     alt: product.altTxt,
@@ -84,11 +79,10 @@ const displayProducts = (product, index) => {
     </div>
   </article>
   `;
-
-  addToCart(product);
+  addToCart();
 };
 
-function addToCart(product) {
+function addToCart() {
   document.getElementById('addToCart').addEventListener('click', () => {
     const quantity = document.getElementById('quantity').value;
     const color = document.getElementById('colors').value;
