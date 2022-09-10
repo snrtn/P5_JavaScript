@@ -113,10 +113,13 @@ function changeQuantity() {
       const totalValue = dataSelected.find((el) => el.value !== defaultValue);
 
       totalValue.quantity = value;
-      dataSelected[c].quantity = totalValue.quantity;
-
-      localStorage.setItem('DATA_STORAGE', JSON.stringify(dataSelected));
-      location.reload();
+      if (totalValue.quantity >= 6) {
+        alert("Quantity n'est pas plus 5");
+      } else {
+        dataSelected[c].quantity = totalValue.quantity;
+        localStorage.setItem('DATA_STORAGE', JSON.stringify(dataSelected));
+        location.reload();
+      }
     });
   }
 }
