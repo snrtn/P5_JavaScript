@@ -48,7 +48,7 @@ h2 {
 }
 .cart__item__content__settings input {
   color: var(--footer-secondary-color);
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   border-radius: 20px;
   border: 1px solid #767676;

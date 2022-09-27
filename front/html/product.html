@@ -70,7 +70,59 @@
     <main class="limitedWidthBlockContainer">
       <div class="limitedWidthBlock">
         <section class="item">
-          <article class="product" id="product"></article>
+          <article class="product" id="product">
+            <div class="item__img">
+              <img src="" alt="" />
+            </div>
+            <div class="item__content">
+              <div class="item__content__titlePrice">
+                <h1 id="title">
+                  <!-- ${item.name} -->
+                </h1>
+                <p>
+                  Prix :
+                  <span id="price"> <!-- ${item.price / 10} --> </span>€
+                </p>
+              </div>
+
+              <div class="item__content__description">
+                <p class="item__content__description__title">Description :</p>
+                <p id="description">
+                  <!-- ${item.description} -->
+                </p>
+              </div>
+
+              <div class="item__content__settings">
+                <div class="item__content__settings__color">
+                  <label for="color-select">Choisir une couleur :</label>
+                  <select name="color-select" id="colors">
+                    <option value="">--SVP, choisissez une couleur --</option>
+                    <!-- ${colorsList} -->
+                  </select>
+                </div>
+                <p id="colorsError"></p>
+
+                <div class="item__content__settings__quantity">
+                  <label id="color" for="itemQuantity"
+                    >Nombre d'article(s) (1-5) :</label
+                  >
+                  <input
+                    type="number"
+                    name="itemQuantity"
+                    min="1"
+                    max="5"
+                    value="0"
+                    id="quantity"
+                  />
+                  <p id="numbersError"></p>
+                </div>
+              </div>
+
+              <div class="item__content__addButton">
+                <button id="addToCart">Ajouter au panier</button>
+              </div>
+            </div>
+          </article>
         </section>
       </div>
     </main>

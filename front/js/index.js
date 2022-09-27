@@ -1,15 +1,16 @@
-import { url } from "./utils.js";
-const productDOM = document.querySelector(".items");
+import { url } from './utils.js';
+const productDOM = document.querySelector('.items');
 
 const fetchProducts = async () => {
-  productDOM.innerHTML = '<div class="loading">Loading</div>';
   try {
     const response = await fetch(url);
     const data = await response.json();
-
     return data;
   } catch (error) {
-    productDOM.innerHTML = '<p class="error">Error</p>';
+    let nodeError = document.createElement('p');
+    let textError = document.createTextNode('Error');
+    let elementError = nodeError.appendChild(textError);
+    productDOM.appendChild(elementError);
   }
 };
 
@@ -20,26 +21,40 @@ const start = async () => {
 start();
 
 const displayProducts = (list) => {
-  const products = list
-    .map((product) => {
-      const item = {
-        id: product._id,
-        name: product.name,
-        alt: product.altTxt,
-        image: product.imageUrl,
-        desc: product.description,
-      };
+  const products = list.map((product) => {
+    const item = {
+      id: product._id,
+      name: product.name,
+      alt: product.altTxt,
+      image: product.imageUrl,
+      desc: product.description,
+    };
+    let textName = document.createTextNode(item.name);
+    let textDesc = document.createTextNode(item.desc);
 
-      return `
-      <a href="./product.html?id=${item.id}">
-        <article>
-          <img src="${item.image}" alt="${item.alt}"/>
-          <h3 class="productName">${item.name}</h3>
-          <p class="productDescription">${item.desc}</p>
-        </article>
-      </a>
-    `;
-    })
-    .join("");
-  productDOM.innerHTML = `<section class="items" id="items">${products}</section>`;
+    let productLink = document.createElement('a');
+    document.querySelector('.items').appendChild(productLink);
+    productLink.href = `product.html?id=${item.id}`;
+
+    let productArticle = document.createElement('article');
+    productLink.appendChild(productArticle);
+
+    let productImg = document.createElement('img');
+    productArticle.appendChild(productImg);
+    productImg.src = item.image;
+    productImg.alt = item.alt;
+
+    let productName = document.createElement('h3');
+    productArticle.appendChild(productName);
+    productName.classList.add('productName');
+    productName.appendChild(textName);
+
+    let productDescription = document.createElement('p');
+    productArticle.appendChild(productDescription);
+    productDescription.classList.add('productName');
+    productDescription.appendChild(textDesc);
+
+    return;
+  });
+  productDOM.appendChild = products;
 };

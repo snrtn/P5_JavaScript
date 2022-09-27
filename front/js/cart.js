@@ -1,15 +1,17 @@
 import { url } from './utils.js';
 let dataSelected = JSON.parse(localStorage.getItem('DATA_STORAGE'));
-const productDOM = document.querySelector('#cart__items');
+const productDOM = document.getElementsByClassName('cart__item');
 
 const fetchProducts = async () => {
-  productDOM.innerHTML = '<div class="loading">Loading</div>';
   try {
     const response = await fetch(url);
     const data = await response.json();
     return data;
   } catch (error) {
-    productDOM.innerHTML = '<p>Votre panier est vide</p>';
+    let nodeError = document.createElement('p');
+    let textError = document.createTextNode('Error');
+    let elementError = nodeError.appendChild(textError);
+    productDOM.appendChild(elementError);
   }
 };
 
@@ -17,67 +19,87 @@ async function displayProducts() {
   const productList = await fetchProducts();
 
   if (dataSelected === null || dataSelected == 0) {
-    productDOM.innerHTML = `<p>Votre panier est vide</p>`;
+    let nodeEmpty = document.createElement('p');
+    let textEmpty = document.createTextNode('Votre panier est vide');
+    let elementEmpty = nodeEmpty.appendChild(textEmpty);
+    productDOM.appendChild(elementEmpty);
   } else {
-    const products = dataSelected
-      .map((product) => {
-        const itemSEL = productList.find((prod) => {
-          return prod._id === product.id;
-        });
+    const products = dataSelected.map((product) => {
+      const itemSEL = productList.find((prod) => {
+        return prod._id === product.id;
+      });
 
-        const item = {
-          id: product.id,
-          color: product.color,
-          quantity: product.quantity,
-          name: itemSEL.name,
-          alt: itemSEL.altTxt,
-          image: itemSEL.imageUrl,
-          price: itemSEL.price,
-        };
+      const item = {
+        id: product.id,
+        color: product.color,
+        quantity: product.quantity,
+        name: itemSEL.name,
+        alt: itemSEL.altTxt,
+        image: itemSEL.imageUrl,
+        price: itemSEL.price,
+      };
+      let textName = document.createTextNode(item.name);
+      let textColor = document.createTextNode(item.color);
+      let textPrice = document.createTextNode(item.price / 10 + '€');
+      let text = document.createTextNode('Qté :');
+      let textDel = document.createTextNode('Supprimer');
 
-        return `<article
-      class="cart__item"
-      data-id="${item.id}"
-      data-color="${item.color}"
-    >
-      <div class="cart__item__img">
-        <img
-          src="${item.image}"
-          alt="${item.alt}"
-        />
-      </div>
-      <div class="cart__item__content">
-        <div class="cart__item__content__description">
-          <h2>${item.name}</h2>
-          <p>${item.color}</p>
-          <p>${item.price / 10}€</p>
-        </div>
-        <p/>
-        <div class="cart__item__content__settings">
-          <div class="cart__item__content__settings__quantity">
-            <p>Qté :</p>
-            <input
-              type="number"
-              class="itemQuantity"
-              name="itemQuantity"
-              min="1"
-              max="5"
-              value="${item.quantity}"
-            />
-          </div>
-          <div class="cart__item__content__settings__delete">
-            <p class="deleteItem" >Supprimer</p>
-          </div>
-        </div>
-      </div>
-    </article>`;
-      })
-      .join('');
-    productDOM.innerHTML = `<section id="cart__items">${products}</section>`;
-    displayTotals(productList);
-    changeQuantity();
-    deleteProduct();
+      let productImg = document.createElement('img');
+      document.querySelector('.cart__item__img').appendChild(productImg);
+      productImg.src = item.image;
+      productImg.alt = item.alt;
+
+      let productName = document.createElement('h2');
+      document
+        .querySelector('.cart__item__content__description')
+        .appendChild(productName);
+      productName.appendChild(textName);
+
+      let productColor = document.createElement('p');
+      document
+        .querySelector('.cart__item__content__description')
+        .appendChild(productColor);
+      productColor.appendChild(textColor);
+
+      let productPrice = document.createElement('p');
+      document
+        .querySelector('.cart__item__content__description')
+        .appendChild(productPrice);
+      productPrice.appendChild(textPrice);
+
+      let productText = document.createElement('span');
+      document
+        .querySelector('.cart__item__content__description')
+        .appendChild(productText);
+      productText.appendChild(text);
+
+      let productQuantity = document.createElement('input');
+      document
+        .querySelector('.cart__item__content__description')
+        .appendChild(productQuantity);
+      productQuantity.value = item.quantity;
+      productQuantity.className = 'itemQuantity';
+      productQuantity.id = 'itemQuantity';
+      productQuantity.setAttribute('type', 'number');
+      productQuantity.setAttribute('name', 'itemQuantity');
+      productQuantity.setAttribute('min', '1');
+      productQuantity.setAttribute('max', '5');
+
+      let productDel = document.createElement('p');
+      document
+        .querySelector('.cart__item__content__description')
+        .appendChild(productDel);
+      productDel.className = 'deleteItem';
+      productDel.appendChild(textDel);
+
+      return;
+    });
+
+    productDOM.appendChild = products;
   }
+  displayTotals(productList);
+  changeQuantity();
+  deleteProduct();
 }
 displayProducts();
 
@@ -96,8 +118,11 @@ function displayTotals(productList) {
     totalPrice += parseInt(cartItem.quantity) * parseFloat(itemSEL.price);
   });
 
-  displayTotalQuantity.innerHTML = totalQty;
-  displayTotalPrice.innerHTML = totalPrice / 10;
+  let textTotalQty = document.createTextNode(totalQty);
+  let textTotalPrice = document.createTextNode(totalPrice / 10);
+
+  displayTotalQuantity.appendChild(textTotalQty);
+  displayTotalPrice.appendChild(textTotalPrice);
 }
 
 function changeQuantity() {
